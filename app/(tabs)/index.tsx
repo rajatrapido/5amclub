@@ -1,98 +1,198 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { AppButton } from '@/components/ui/app-button';
+import { AppCard } from '@/components/ui/app-card';
+import { Screen } from '@/components/ui/screen';
+import { Brand, Fonts } from '@/constants/theme';
 
-export default function HomeScreen() {
+const weekdaySummary = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+export default function TodayScreen() {
+  const metrics = useMemo(
+    () => [
+      { label: 'Status', value: 'UP' },
+      { label: 'Window', value: '5:00–5:10' },
+      { label: 'Steps', value: '38 / 50' },
+    ],
+    [],
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <Screen>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        <View style={styles.headerRow}>
+          <View>
+            <ThemedText style={styles.eyebrow}>Today</ThemedText>
+            <ThemedText style={styles.title}>Good morning, Kevin</ThemedText>
+          </View>
+          <View style={styles.avatarBubble}>
+            <ThemedText style={styles.avatarText}>K</ThemedText>
+          </View>
+        </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <AppCard tone="accent" style={styles.alarmCard}>
+          <View style={styles.alarmRow}>
+            <View>
+              <ThemedText style={styles.cardLabel}>5:00 AM Alarm</ThemedText>
+              <ThemedText style={styles.cardSubtext}>{weekdaySummary.join(' · ')}</ThemedText>
+            </View>
+            <View style={styles.alarmToggle}>
+              <View style={styles.alarmToggleDot} />
+              <ThemedText style={styles.alarmToggleText}>On</ThemedText>
+            </View>
+          </View>
+        </AppCard>
+
+        <AppCard style={styles.confirmCard}>
+          <ThemedText style={styles.cardLabel}>Wake-up confirmation</ThemedText>
+          <ThemedText style={styles.cardSubtext}>Walk 30–50 steps to confirm presence.</ThemedText>
+          <View style={styles.metricRow}>
+            {metrics.map((metric) => (
+              <View key={metric.label} style={styles.metricItem}>
+                <ThemedText style={styles.metricLabel}>{metric.label}</ThemedText>
+                <ThemedText style={styles.metricValue}>{metric.value}</ThemedText>
+              </View>
+            ))}
+          </View>
+          <AppButton label="Log steps" />
+        </AppCard>
+
+        <View style={styles.rowSplit}>
+          <AppCard tone="mint" style={styles.splitCard}>
+            <ThemedText style={styles.cardLabel}>Daily status</ThemedText>
+            <ThemedText style={styles.statusValue}>UP</ThemedText>
+            <ThemedText style={styles.cardSubtext}>Locked at 5:20 AM</ThemedText>
+          </AppCard>
+          <AppCard tone="lilac" style={styles.splitCard}>
+            <ThemedText style={styles.cardLabel}>Current streak</ThemedText>
+            <ThemedText style={styles.statusValue}>6 days</ThemedText>
+            <ThemedText style={styles.cardSubtext}>Best: 12 days</ThemedText>
+          </AppCard>
+        </View>
+
+        <AppCard tone="peach" style={styles.reminderCard}>
+          <ThemedText style={styles.cardLabel}>Skip next day</ThemedText>
+          <ThemedText style={styles.cardSubtext}>
+            Use a single skip to pause tomorrow without breaking your momentum.
+          </ThemedText>
+          <AppButton label="Schedule skip" variant="secondary" />
+        </AppCard>
+      </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    padding: Brand.spacing.xl,
+    gap: Brand.spacing.lg,
+  },
+  headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  eyebrow: {
+    fontSize: 12,
+    color: Brand.colors.mutedText,
+    textTransform: 'uppercase',
+    letterSpacing: 1.4,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  title: {
+    fontSize: 28,
+    fontFamily: Fonts.rounded,
+    fontWeight: '700',
+    color: Brand.colors.ink,
+  },
+  avatarBubble: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Brand.colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Brand.colors.line,
+  },
+  avatarText: {
+    fontFamily: Fonts.rounded,
+    fontWeight: '700',
+    color: Brand.colors.ink,
+  },
+  alarmCard: {
+    gap: Brand.spacing.md,
+  },
+  alarmRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  alarmToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Brand.spacing.xs,
+    backgroundColor: Brand.colors.card,
+    borderRadius: Brand.radii.md,
+    paddingVertical: Brand.spacing.xs,
+    paddingHorizontal: Brand.spacing.sm,
+  },
+  alarmToggleDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: Brand.colors.accent,
+  },
+  alarmToggleText: {
+    fontSize: 12,
+    color: Brand.colors.ink,
+  },
+  confirmCard: {
+    gap: Brand.spacing.sm,
+  },
+  cardLabel: {
+    fontSize: 16,
+    fontFamily: Fonts.rounded,
+    fontWeight: '600',
+  },
+  cardSubtext: {
+    color: Brand.colors.mutedText,
+    lineHeight: 22,
+  },
+  metricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: Brand.spacing.sm,
+  },
+  metricItem: {
+    alignItems: 'center',
+  },
+  metricLabel: {
+    fontSize: 12,
+    color: Brand.colors.mutedText,
+  },
+  metricValue: {
+    fontSize: 16,
+    fontFamily: Fonts.rounded,
+    fontWeight: '600',
+    color: Brand.colors.ink,
+  },
+  rowSplit: {
+    flexDirection: 'row',
+    gap: Brand.spacing.md,
+  },
+  splitCard: {
+    flex: 1,
+    gap: Brand.spacing.sm,
+  },
+  statusValue: {
+    fontSize: 22,
+    fontFamily: Fonts.rounded,
+    fontWeight: '700',
+    color: Brand.colors.ink,
+  },
+  reminderCard: {
+    gap: Brand.spacing.sm,
   },
 });

@@ -5,7 +5,48 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
+export const Brand = {
+  colors: {
+    background: '#FFF8F1',
+    card: '#FFFFFF',
+    cardMuted: '#FFF1DA',
+    accent: '#F7C84D',
+    accentSoft: '#FFE7AD',
+    mint: '#C9F1E6',
+    lilac: '#DCD7FF',
+    peach: '#FFD6C9',
+    ink: '#1D1A16',
+    mutedText: '#6B5E52',
+    line: '#F1E7DA',
+  },
+  radii: {
+    xl: 28,
+    lg: 22,
+    md: 16,
+    sm: 12,
+  },
+  spacing: {
+    xs: 6,
+    sm: 10,
+    md: 16,
+    lg: 20,
+    xl: 28,
+    xxl: 36,
+  },
+  shadow: {
+    ios: {
+      shadowColor: '#1D1A16',
+      shadowOpacity: 0.08,
+      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 8 },
+    },
+    android: {
+      elevation: 4,
+    },
+  },
+};
+
+const tintColorLight = Brand.colors.accent;
 const tintColorDark = '#fff';
 
 export const Colors = {
